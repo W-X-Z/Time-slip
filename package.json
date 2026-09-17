@@ -1,0 +1,15 @@
+{
+  "name": "time-slip",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "10초 너머 — 기억이 남는 타임루프 플랫포머",
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "dev": "node scripts/serve.mjs",
+    "build": "node scripts/build.mjs",
+    "preview": "node scripts/serve.mjs --dist",
+    "test": "node --test tests/*.test.js",
+    "check": "node scripts/check.mjs"
+  }
+}

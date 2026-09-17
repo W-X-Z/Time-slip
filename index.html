@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#172236" />
+  <meta name="description" content="10초마다 되돌아가는 세계. 시간 파편을 모으고, 기억의 문을 열어, 내일에 도착하세요. 설치 없이 즐기는 타임루프 플랫포머." />
+  <title>TIME SLIP — 10초 너머</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23172236'/%3E%3Cpath d='M18 12h28L22 52h24M20 12l24 40' stroke='%23f8c77d' stroke-width='5' fill='none'/%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="./src/style.css" />
+</head>
+<body>
+<div id="app" data-mode="title">
+  <div class="game-surface"><canvas id="world" aria-label="시간 파편을 모으며 오른쪽으로 나아가는 2D 플랫포머 게임">이 게임은 Canvas를 지원하는 브라우저가 필요합니다.</canvas></div>
+  <header class="topbar">
+    <a class="wordmark" href="#" id="home-link" aria-label="타이틀 화면으로">TIME<span class="brand-slash">/</span>SLIP<span class="wordmark-sub">10초 너머</span></a>
+    <div id="timer-panel" class="timer-panel" hidden>
+      <div class="timer-label">LOOP <span id="loop-number">001</span><span class="timer-caption">남은 시간</span></div>
+      <div class="timer-number" role="timer" aria-label="남은 시간"><span id="time">10.00</span><small id="limit">/ 10s</small></div>
+      <div class="timer-track"><i id="timer-fill"></i></div>
+      <div class="next-time" id="next-time">다음 루프 <b id="next-limit">10초</b></div>
+    </div>
+    <div class="toolbar">
+      <button class="icon-button" id="sound-button" aria-label="소리 켜기" aria-pressed="false" title="소리 켜기">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M11 5 6 9H3v6h3l5 4V5Z"/><path class="sound-waves" d="M15 8a6 6 0 0 1 0 8m3-11a10 10 0 0 1 0 14"/><path class="sound-off" d="m15 9 6 6m0-6-6 6"/></svg>
+      </button>
+      <button class="icon-button" id="fullscreen-button" aria-label="전체 화면" title="전체 화면"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 4H4v5m11-5h5v5M4 15v5h5m11-5v5h-5"/></svg></button>
+      <button class="icon-button" id="pause-button" aria-label="일시정지" title="일시정지 (Esc)" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 5v14M16 5v14"/></svg></button>
+    </div>
+  </header>
+  <section id="title-screen" class="title-screen" aria-label="시작 화면">
+    <div class="title-content">
+      <div class="eyebrow"><i></i>A TEN-SECOND ODYSSEY</div>
+      <h1>TIME<br/><span>SLIP</span><sup>01</sup></h1>
+      <p class="korean-title">10초 너머</p>
+      <p class="intro">세상은 10초마다 되감깁니다.<br/>하지만 당신이 발견한 시간은 남습니다.</p>
+      <div class="title-actions"><button class="primary-button" id="start-button">첫 루프 시작 <span aria-hidden="true">→</span></button><button class="text-button" id="help-button">게임 방법</button></div>
+      <p class="save-hint" id="save-hint">설치 없이, 바로 탐험하세요.</p>
+    </div>
+    <div class="title-footer"><span>10초의 시작<span class="separator">/</span>6개의 기억<span class="separator">/</span>하나의 내일</span><span class="edition">PLAYABLE PROTOTYPE · 0.1</span></div>
+  </section>
+  <div class="in-game" id="game-info" hidden>
+    <div class="zone-heading"><span id="zone-index">01</span><div><b id="zone-name">멈춘 정원</b><small id="zone-english">THE STILL GARDEN</small></div></div>
+    <div class="memories" aria-label="모은 시간 파편"><div id="shard-slots" class="shard-slots"></div><span>기억 <b id="shard-count">0</b> / 6</span></div>
+    <div class="desktop-controls"><span><kbd>A</kbd><kbd>D</kbd> 이동</span><span><kbd>SPACE</kbd> 점프</span><span><kbd>R</kbd> 되감기</span><span id="desktop-travel"><kbd>E</kbd> 기억 이동</span></div>
+    <div class="journey-track"><i id="journey-fill"></i><span>처음</span><span>내일</span></div>
+  </div>
+  <div class="touch-controls" id="touch-controls" hidden>
+    <div class="touch-utilities"><button data-control="rewind" class="utility-control" aria-label="이번 루프 되감기">되감기</button><button data-control="interact" class="utility-control travel-control" id="travel-button" aria-label="기억의 문으로 이동" hidden>기억 이동 <span>→</span></button></div>
+    <div class="direction-pad"><button data-control="left" aria-label="왼쪽 이동">←</button><button data-control="right" aria-label="오른쪽 이동">→</button></div>
+    <button data-control="jump" class="jump-button" aria-label="점프, 길게 누르면 더 높이">↑<small>점프</small></button>
+  </div>
+  <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+  <div id="zone-announcement" class="zone-announcement" hidden><small id="announce-number"></small><b id="announce-name"></b></div>
+  <div id="rewind-screen" class="rewind-screen" hidden><div><small id="rewind-reason">시간의 끝</small><h2>다시, 처음으로.</h2><p>기억은 남아 있습니다. <span id="rewind-next">다음 루프 10초</span></p></div></div>
+  <section id="pause-screen" class="modal-screen" aria-label="일시정지" hidden>
+    <div class="menu-card"><div class="eyebrow">TIME IS ON YOUR SIDE</div><h2>잠시, 시간을 멈추고.</h2><p class="menu-description">시간은 이 화면에서 흐르지 않습니다.</p>
+      <button id="resume-button" class="primary-button">탐험 계속하기 <span>→</span></button>
+      <div class="setting-row"><span>이전 루프의 잔상</span><button id="ghost-button" class="toggle-button" aria-pressed="true">켜짐</button></div>
+      <div class="setting-row"><span>화면 움직임 줄이기</span><button id="motion-button" class="toggle-button" aria-pressed="false">꺼짐</button></div>
+      <p class="pause-tip">시간 파편은 다음 루프를 4초 늘립니다.<br/>기억의 문을 열면 시작점에서 <kbd>E</kbd>로 이동합니다.</p>
+      <div class="menu-bottom"><button id="restart-button" class="text-button">처음부터 새 여정</button><button id="title-button" class="text-button">타이틀로</button></div>
+    </div>
+  </section>
+  <section id="win-screen" class="modal-screen win-screen" aria-label="게임 클리어" hidden>
+    <div class="menu-card"><div class="eyebrow">BEYOND THE TENTH SECOND</div><h2>이번에는,<br/>내일이 왔습니다.</h2><p class="menu-description">모든 시간이 당신을 이곳으로 데려왔습니다.</p>
+      <div class="win-stats"><div><small>지나온 루프</small><b id="win-loops">0</b></div><div><small>총 탐험 시간</small><b id="win-time">0s</b></div><div><small>찾은 기억</small><b>6<span>/6</span></b></div></div>
+      <p class="best-record" id="best-record"></p><button id="replay-button" class="primary-button">새로운 여정 <span>→</span></button><button id="win-title-button" class="text-button">타이틀로</button>
+    </div>
+  </section>
+  <dialog id="help-dialog" class="help-dialog"><div class="eyebrow">HOW TO PLAY</div><h2>시간은 짧고,<br/>기억은 길게 남습니다.</h2><div class="help-steps"><p><b>01</b><span>오른쪽으로 이동하며 발판을 오르세요.<small>방향키 / A·D로 이동 · Space / W / ↑로 점프</small></span></p><p><b>02</b><span>황금빛 시간 파편을 모으세요.<small>하나당 다음 루프 +4초. 지금 남은 시간은 그대로입니다.</small></span></p><p><b>03</b><span>기억의 문으로 다시 가는 길을 줄이세요.<small>문 가까이 가면 영구 개방. 시작점에서 E로 이동합니다.</small></span></p><p><b>04</b><span>여섯 기억을 모아 가장 오른쪽 문에 도착하세요.<small>R로 즉시 되감기 · Esc / P로 일시정지</small></span></p></div><p class="help-note">모바일에서는 화면 아래 버튼을 사용하세요. 가로 화면을 권장합니다.<br/>진행은 이 브라우저에 자동 저장됩니다. 이전 루프의 잔상은 부딪히지 않습니다.</p><button id="help-close" class="primary-button">알겠습니다 <span>→</span></button></dialog>
+  <dialog id="reset-dialog" class="help-dialog reset-dialog"><div class="eyebrow">A FRESH BEGINNING</div><h2>새로운 여정을 시작할까요?</h2><p>모은 파편과 열린 문이 초기화됩니다.<br/>최고 기록은 남습니다.</p><div class="dialog-actions"><button id="reset-cancel" class="text-button">취소</button><button id="reset-confirm" class="primary-button">새 여정 시작</button></div></dialog>
+  <noscript><div class="no-script">게임 실행을 위해 JavaScript를 활성화해 주세요.</div></noscript>
+</div>
+<script type="module" src="./src/main.js"></script>
+</body>
+</html>
