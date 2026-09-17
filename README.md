@@ -6,6 +6,10 @@
 
 ## 플레이
 
+**[브라우저에서 플레이](https://rawcdn.githack.com/W-X-Z/Time-slip/0fc051a39e84f609a740ebab3f8359bc505d655a/prototype/index.html)**
+
+첫 접속 시 GitHack의 외부 HTML 확인 화면이 나타날 수 있습니다. 목적지가 이 저장소의 `prototype/index.html`인지 확인하고 계속 진행합니다. 정적 데모 링크이며 계정이나 결제는 필요하지 않습니다.
+
 `prototype/index.html`은 빌드 후 생성되는 독립 실행 파일입니다. 다운로드해 브라우저로 열거나 정적 호스팅에 올리면 됩니다. 첫 로드 후 게임 자체에는 네트워크 요청이 없습니다.
 
 | 조작 | 키보드 | 모바일 |
@@ -79,7 +83,9 @@ python scripts/mobile-check.py
 
 ## 배포
 
-일반 정적 호스팅은 `dist/index.html`을 사용합니다. Vercel 설정은 `vercel.json`에 포함되어 있습니다. GitHub Actions는 검사·테스트 후 독립 실행 파일을 갱신합니다. 호스팅 공급자의 계정 연결이나 배포 성공 여부는 별도로 확인해야 합니다.
+일반 정적 호스팅은 `dist/index.html`을 사용합니다. Vercel 설정은 `vercel.json`에 포함되어 있습니다. GitHub Actions는 검사·테스트 후 독립 실행 파일을 갱신합니다. 첫 실행은 [검사·테스트·빌드 모두 통과](https://github.com/W-X-Z/Time-slip/actions/runs/35245184363)했습니다.
+
+위 플레이 링크는 검증한 커밋을 고정한 GitHack 정적 데모입니다. Vercel 자동 배포는 연결 도구의 입력 규격 오류로 완료하지 못했으며, Vercel 주소로 안내하지 않습니다. GitHack은 제3자 무료 서비스이므로 장기 가용성을 보장하지 않습니다. HTML을 내려받아 자체 호스팅할 수 있습니다.
 
 ## 현재 한계
 
